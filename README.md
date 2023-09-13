@@ -1,5 +1,5 @@
-## Usage
-# Cmake
+# Usage
+## Cmake
 `cmake . -B build`
-# OSG Bianry
+## OSG Bianry
 [OSG Binary Download Link](https://objexx.com/OpenSceneGraph.html)
