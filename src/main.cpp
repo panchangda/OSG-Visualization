@@ -58,7 +58,7 @@ int main(int argc, char** argv)
 	osg::ref_ptr<osg::CoordinateSystemNode> csn = createEarth();
 	root->addChild(csn);
 
-	osg::ref_ptr<osg::Geode> licGeode = VolumeLIC::Generate(camera.get(), llhRange(30.f, 35.f, 130.f, 135.f, 0.f,500000.f));
+	osg::ref_ptr<osg::Geode> licGeode = VolumeLIC::Generate(camera.get(), llhRange(30.2567787f, 32.f, 120.f, 122.f, 0.f,500000.f));
 	root->addChild(licGeode);
 	osg::ref_ptr<osg::Geode> licGeode1 = VolumeLIC::Generate(camera.get(), llhRange(18.f, 25.f, 140.f, 145.f, 0.f, 300000.f));
 	root->addChild(licGeode1);

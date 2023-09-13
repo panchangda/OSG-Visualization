@@ -20,7 +20,7 @@ struct llhRange{
 		double _minLongitute, double _maxLongitute, 
 		double _minHeight, double _maxHeight)
 	:minLatitude(osg::DegreesToRadians(_minLatitude)), maxLatitude(osg::DegreesToRadians(_maxLatitude)),
-		minLongtitude(osg::DegreesToRadians(_minLongitute)), maxLongtitude(osg::DegreesToRadians(_maxLongitute)),
+		minLongtitude(osg::DegreesToRadians(_minLongitute+180.0)), maxLongtitude(osg::DegreesToRadians(_maxLongitute+180.0)),
 		minHeight(_minHeight), maxHeight(_maxHeight){}
 };
 void llh2xyz_Sphere(llhRange llh,
