@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <filesystem>
 
@@ -16,7 +16,7 @@
 #include <format>
 
 using namespace std;
-namespace OSGB{
+namespace OSGB {
 	static void findDir(const string& dir, vector<string>& subDirs)
 	{
 		subDirs.clear();
@@ -84,7 +84,7 @@ namespace OSGB{
 			lod->setFileName(0, "");
 			lod->setFileName(1, relativeFilePath);
 
-			lod->setRange(0, 0, 1.0);																							//��һ�㲻�ɼ�
+			lod->setRange(0, 0, 1.0);																							//��һ�㲻�ɼ�
 			lod->setRange(1, 1.0, FLT_MAX);
 
 			lod->setDatabasePath("");
@@ -100,30 +100,38 @@ namespace OSGB{
 		std::string outputLodFile = fileDir + "/Data.osgb";
 		createObliqueIndexes(fileDir);
 
-		osg::ref_ptr<osg::Group> spModelRoot = new osg::Group; 
-		osg::ref_ptr<osg::CoordinateSystemNode> spCsn = new osg::CoordinateSystemNode;
-		auto pEllModel = new osg::EllipsoidModel();
-		spCsn->setEllipsoidModel(pEllModel);
+		osg::ref_ptr<osg::Group> model_root = new osg::Group;
+
+		osg::ref_ptr<osg::CoordinateSystemNode>csn = new osg::CoordinateSystemNode;
+		csn->setEllipsoidModel(new osg::EllipsoidModel);
+		osg::Matrixd mtTemp;
+		// ������Ҫ+180
+		// �ο�https://dandelioncloud.cn/article/details/1610866466171863042
+		csn->getEllipsoidModel()->computeLocalToWorldTransformFromLatLongHeight(osg::DegreesToRadians(30.2567787), osg::DegreesToRadians(300.2549953), 10, mtTemp);
+		//auto pEllModel = new osg::EllipsoidModel();
+		//csn->setEllipsoidModel(pEllModel);
 
 		osg::Node* node = new osg::Node;
 		node = osgDB::readNodeFile(outputLodFile);
 
 		osg::ref_ptr<osg::MatrixTransform> spMatrixTrans = new osg::MatrixTransform;
 		auto matrix = spMatrixTrans->getMatrix();
-		matrix.makeScale(osg::Vec3(10000, 10000, 10000));
+		// ̫С�˿����壬����ǰ��������ôϸ�¡�������Ϊ10000���塣
+		matrix.makeScale(osg::Vec3(1, 1, 1));
 		spMatrixTrans->setMatrix(matrix);
 		spMatrixTrans->addChild(node);
 
 		double x, y, z;
-		
-		pEllModel->convertLatLongHeightToXYZ(osg::DegreesToRadians(30.2567787), osg::DegreesToRadians(120.2549953), 1000, x, y, z);
-		osg::ref_ptr<osg::PositionAttitudeTransform> spPosition = new osg::PositionAttitudeTransform;
+
+		//pEllModel->convertLatLongHeightToXYZ(osg::DegreesToRadians(30.2567787), osg::DegreesToRadians(120.2549953), 1000, x, y, z);
+		osg::ref_ptr<osg::MatrixTransform> spPosition = new osg::MatrixTransform;
 		spPosition->addChild(spMatrixTrans);
+		spPosition->setMatrix(mtTemp);
 
-		spModelRoot->addChild(spPosition);
+		model_root->addChild(spPosition);
 
-		spCsn->addChild(spModelRoot);
+		csn->addChild(model_root);
 
-		return spCsn.get();
+		return csn.get();
 	}
 }
